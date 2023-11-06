@@ -64,7 +64,7 @@ const AddMemberModal = () => {
         id="addMemberModal"
         className="modal-toggle"
       />
-      <div className="modal">
+      <div className="modal modal-bottom lg:modal-middle">
         <div className="modal-box">
           <h3 className="text-lg font-bold">Add New Member</h3>
           <div className="flex items-center space-x-2">
