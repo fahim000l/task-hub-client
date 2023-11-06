@@ -1,14 +1,14 @@
 import useGetAllTodos from "@/hooks/useGetAllTodos";
 import Main from "@/layout/Main";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { TtoDo } from "../add-to-do";
-import { format } from "date-fns";
 import TodoAcordian from "@/components/Main/to-dos/TodoAcordian";
 import { Delete, Done } from "@mui/icons-material";
 import EditTodoModal from "@/components/Main/to-dos/EditTodoModal";
 import toast from "react-hot-toast/headless";
 import Swal from "sweetalert2";
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
+import { AUTH_CONTEXT } from "@/contexts/AuthProviders";
 
 export const handleTodoStatus = (
   status: string,
@@ -40,9 +40,9 @@ export const handleTodoStatus = (
 };
 
 const index = () => {
-  const { toDos, toDosRefetch } = useGetAllTodos();
   const [selectedTodos, setSelectedTodos] = useState<string[] | never[]>([]);
   const [selectedToddo, setSelectedTodo] = useState<TtoDo | null>(null);
+  const { authUser, authUserRefetch } = useContext(AUTH_CONTEXT) || {};
 
   const deleteTodos = () => {
     Swal.fire({
@@ -62,7 +62,7 @@ const index = () => {
           .then((data) => {
             console.log(data);
             if (data?.success) {
-              toDosRefetch();
+              authUserRefetch?.();
               Swal.fire("Todos removed successfully!", "", "success");
               setSelectedTodos([]);
               toast.success("Todos removed successfully");
@@ -90,7 +90,7 @@ const index = () => {
                   "done",
                   selectedTodos,
                   setSelectedTodos,
-                  toDosRefetch
+                  authUserRefetch
                 )
               }
               className="btn btn-circle btn-sm text-white bg-[green]"
@@ -100,7 +100,7 @@ const index = () => {
           </div>
         )}
         <div className="join join-vertical w-full p-2 lg:p-5">
-          {toDos?.map((toDo: TtoDo) => (
+          {authUser?.todos?.map((toDo: TtoDo) => (
             <TodoAcordian
               setSelectedTodo={setSelectedTodo}
               selectedTodos={selectedTodos}

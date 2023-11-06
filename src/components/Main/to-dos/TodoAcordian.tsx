@@ -1,9 +1,10 @@
 import { TtoDo } from "@/pages/add-to-do";
 import { format } from "date-fns";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { Edit } from "@mui/icons-material";
 import { handleTodoStatus } from "@/pages/to-dos";
 import useGetAllTodos from "@/hooks/useGetAllTodos";
+import { AUTH_CONTEXT } from "@/contexts/AuthProviders";
 
 interface props {
   toDo: TtoDo;
@@ -19,7 +20,7 @@ const TodoAcordian = ({
   setSelectedTodo,
 }: props) => {
   const { _id, work, deadline, details, status, subject } = toDo;
-  const { toDosRefetch } = useGetAllTodos();
+  const { authUserRefetch } = useContext(AUTH_CONTEXT) || {};
 
   useEffect(() => {
     if (status !== "pending") {
@@ -28,7 +29,7 @@ const TodoAcordian = ({
           "pending",
           [_id as string],
           setSelectedTodos,
-          toDosRefetch
+          authUserRefetch
         );
       }
     }

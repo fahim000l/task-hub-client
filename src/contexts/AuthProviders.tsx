@@ -1,5 +1,11 @@
+import { TtoDo } from "@/pages/add-to-do";
+import { Ttm } from "@/pages/my-teams";
 import { TUser } from "@/pages/signup";
-import { useQuery } from "@tanstack/react-query";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  useQuery,
+} from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React, { createContext, useEffect, useState } from "react";
 
@@ -12,6 +18,8 @@ export interface TauthUser {
   email: string;
   password: string;
   profilePic: string;
+  memberships: Ttm[];
+  todos: TtoDo[];
 }
 
 export interface TauthInfo {
@@ -20,6 +28,10 @@ export interface TauthInfo {
   authUser: TauthUser;
   googleSignIn: () => void;
   logOut: () => void;
+  authUserRefetch: (
+    options?: RefetchOptions | undefined
+  ) => Promise<QueryObserverResult<any, Error>>;
+  authUserLoader: boolean;
 }
 export const AUTH_CONTEXT = createContext<TauthInfo | undefined>(undefined);
 
@@ -75,7 +87,11 @@ const AuthProviders = ({ children }: params) => {
     });
   };
 
-  const { data: { [0]: authUser } = {} } = useQuery({
+  const {
+    data: { [0]: authUser } = {},
+    refetch: authUserRefetch,
+    isLoading: authUserLoader,
+  } = useQuery({
     queryKey: [authLoader],
     queryFn: async () => {
       setAuthLoader(false);
@@ -93,7 +109,9 @@ const AuthProviders = ({ children }: params) => {
     signUp,
     googleSignIn,
     logOut,
+    authUserRefetch,
     authUser,
+    authUserLoader,
   };
 
   return (

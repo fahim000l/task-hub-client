@@ -13,7 +13,7 @@ export interface Tteam {
   details?: string;
   leader?: string;
   leaderInfo?: TUser[];
-  memberInfo?: Ttm[];
+  members?: Ttm[];
 }
 
 const index = () => {

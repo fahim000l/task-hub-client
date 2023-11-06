@@ -3,7 +3,7 @@ import React from "react";
 
 const useGetTeamById = (teamId: string | undefined) => {
   const {
-    data: team,
+    data: { [0]: team } = {},
     refetch: teamRefetch,
     isLoading: teamLoadnig,
   } = useQuery({

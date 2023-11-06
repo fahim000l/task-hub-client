@@ -10,9 +10,7 @@ interface props {
 }
 
 const Main = ({ children }: props) => {
-  const { logOut } = useContext(AUTH_CONTEXT) || {};
-
-  const { teams } = useGetAllTeams();
+  const { logOut, authUser } = useContext(AUTH_CONTEXT) || {};
 
   return (
     <div>
@@ -45,7 +43,7 @@ const Main = ({ children }: props) => {
                   <Link href={"/my-teams"}>My Team</Link>
                 </summary>
                 <ul className="menu">
-                  {teams?.map((team: Ttm) => (
+                  {authUser?.memberships?.map((team: Ttm) => (
                     <li key={team?._id}>
                       <Link href={`/my-teams/${team.teamId}`}>
                         {team?.teamInfo?.[0].teamName}
