@@ -10,7 +10,7 @@ interface props {
 
 const SubmissionCard = ({ submission }: props) => {
   return (
-    <details className="lg:w-[90%]">
+    <details className="lg:w-[90%] my-2">
       <summary className="bg-[lightblue] p-2 text-black rounded-lg flex items-center justify-between cursor-pointer">
         <div className="flex space-x-1 items-center">
           <div className="avatar">
@@ -44,23 +44,6 @@ const SubmissionCard = ({ submission }: props) => {
       </div>
     </details>
   );
-
-  // return (
-  //   <div className="collapse w-[90%]">
-  //     <input
-  //       type="radio"
-  //       name="my-accordion-1"
-  //       onClick={() => setChecked(!checked)}
-  //       checked={checked}
-  //     />
-  //     <div className="collapse-title bg-[blue] text-xl font-medium">
-  //       Click to open this one and close others
-  //     </div>
-  //     <div className="collapse-content">
-  //       <p>hello</p>
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default SubmissionCard;

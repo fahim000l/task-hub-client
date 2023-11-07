@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import { TUser } from "@/pages/signup";
 import { Tsubmission } from "./taskId/AddSubmissionDrawer";
+import useGetTeamById from "@/hooks/useGetTeamById";
 
 interface props {
   team: Tteam;
@@ -32,6 +33,7 @@ export interface Ttask {
   attachments?: TAt[] | never[];
   assignings?: TAssigned[] | never[];
   submissions?: Tsubmission[] | never[];
+  teamInfo?: Tteam[];
 }
 
 export interface TAt {
@@ -45,6 +47,7 @@ export interface TAssigned {
   taskId?: string;
   user: string;
   assignedTo?: TUser[];
+  taskInfo?: Ttask[];
 }
 
 const AddTasksDrawer = ({ team }: props) => {
@@ -58,6 +61,8 @@ const AddTasksDrawer = ({ team }: props) => {
   const {
     query: { teamId },
   } = useRouter();
+
+  const { teamRefetch } = useGetTeamById(teamId as string);
 
   const Formik = useFormik<Ttask>({
     initialValues: {
@@ -74,6 +79,34 @@ const AddTasksDrawer = ({ team }: props) => {
       work: "",
       assignings: [],
       details: "",
+    },
+    validate: (values) => {
+      const error = {
+        taskName: "",
+        work: "",
+        deadline: "",
+        assignings: "",
+      };
+
+      if (!values?.taskName) {
+        error.taskName = "Task Name is required";
+      }
+
+      if (!values?.work) {
+        error.work = "Work is required";
+      }
+
+      if (new Date(values.deadline.day as string) <= new Date()) {
+        error.deadline = "Deadline must have to be in future time";
+      }
+
+      if (values.assign === "specific" && values.assignings?.length === 0) {
+        error.assignings = "You haven't choosed any member to assign";
+      }
+
+      if (error.deadline || error.taskName || error.work || error.assignings) {
+        return error;
+      }
     },
     onSubmit: (values) => {
       values.deadline.time = time as string;
@@ -110,6 +143,7 @@ const AddTasksDrawer = ({ team }: props) => {
           console.log(data);
           if (data?.success) {
             Formik.resetForm();
+            teamRefetch();
             Swal.fire("New task added!", "", "success");
           }
         });
@@ -146,35 +180,47 @@ const AddTasksDrawer = ({ team }: props) => {
   return (
     <div className="drawer drawer-end">
       <input id="addTaskDrawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-side z-[900] h-full overflow-scroll">
+      <div className="drawer-side z-[900] min-h-screen overflow-scroll">
         <label
           htmlFor="addTaskDrawer"
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <div className="w-[90%] bg-[lightblue] h-[100vh] text-base-content">
+        <div className="w-[90%] bg-[lightblue] min-h-screen text-base-content">
           <form
             onSubmit={Formik.handleSubmit}
-            className="lg:w-full lg:p-5 p-2 h-[100vh]"
+            className="lg:w-full lg:p-5 p-2 min-h-screen"
           >
             <div className="flex flex-col my-2">
-              <label className={`font-bold`} htmlFor="">
-                {"Task Name"}
+              <label
+                className={`font-bold ${
+                  Formik.errors.taskName && "text-[red]"
+                }`}
+                htmlFor=""
+              >
+                {Formik.errors.taskName || "Task Name"}
               </label>
               <input
                 {...Formik.getFieldProps("taskName")}
                 type="text"
-                className={`input input-bordered input-sm my-2`}
+                className={`input input-bordered input-sm my-2 ${
+                  Formik.errors.taskName && "border-[red]"
+                }`}
               />
             </div>
             <div className="flex flex-col my-2">
-              <label className={`font-bold`} htmlFor="">
-                {"Work"}
+              <label
+                className={`font-bold ${Formik.errors.work && "text-[red]"}`}
+                htmlFor=""
+              >
+                {Formik.errors.work || "Work"}
               </label>
               <input
                 {...Formik.getFieldProps("work")}
                 type="text"
-                className={`input input-bordered input-sm my-2`}
+                className={`input input-bordered input-sm my-2 ${
+                  Formik.errors.work && "border-[red]"
+                }`}
               />
             </div>
             <div className="flex flex-col my-2">
@@ -233,7 +279,12 @@ const AddTasksDrawer = ({ team }: props) => {
                     </li>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} placeholder="Search members" />
+                    <TextField
+                      error={Formik.errors.assignings !== "" && true}
+                      helperText={Formik.errors.assignings}
+                      {...params}
+                      placeholder="Search members"
+                    />
                   )}
                 />
               )}
@@ -277,8 +328,13 @@ const AddTasksDrawer = ({ team }: props) => {
               />
             </div>
             <div className="flex flex-col my-2">
-              <label className="font-bold" htmlFor="">
-                Deadline
+              <label
+                className={`font-bold ${
+                  Formik.errors.deadline && "text-[red]"
+                }`}
+                htmlFor=""
+              >
+                {(Formik.errors.deadline as string) || "Deadline"}
               </label>
               <div className="flex items-center space-x-2">
                 <input
@@ -290,7 +346,9 @@ const AddTasksDrawer = ({ team }: props) => {
                     })
                   }
                   placeholder="dd/mm/yyyy"
-                  className="input input-bordered input-sm"
+                  className={`input input-bordered input-sm ${
+                    Formik.errors.deadline && "border-[red]"
+                  }`}
                 />
                 <input
                   type="time"

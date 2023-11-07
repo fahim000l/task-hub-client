@@ -1,3 +1,4 @@
+import { TAssigned } from "@/components/Main/my-teams/tasks/AddTasksDrawer";
 import { TtoDo } from "@/pages/add-to-do";
 import { Ttm } from "@/pages/my-teams";
 import { TUser } from "@/pages/signup";
@@ -20,6 +21,7 @@ export interface TauthUser {
   profilePic: string;
   memberships: Ttm[];
   todos: TtoDo[];
+  assignings: TAssigned[];
 }
 
 export interface TauthInfo {

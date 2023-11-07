@@ -20,6 +20,8 @@ const Team = ({ children }: props) => {
 
   const { team }: { team: Tteam } = useGetTeamById(teamId as string);
 
+  const { pathname } = useRouter();
+
   return (
     <Main>
       {show && (
@@ -50,12 +52,21 @@ const Team = ({ children }: props) => {
           <ArrowDownward className="" />
         )}
       </div>
-      <div className="tabs tabs-boxed hidden lg:inline">
-        <Link href={`/my-teams/${teamId}`} className="tab w-[33%]">
+      <div className="tabs tabs-boxed hidden lg:block">
+        <Link
+          href={`/my-teams/${teamId}`}
+          className={`tab w-[50%] ${
+            !pathname.includes("/members") && "tab-active"
+          }`}
+        >
           Tasks
         </Link>
-        <a className="tab w-[33%] tab-active">Announcements</a>
-        <Link href={`/my-teams/${teamId}/members`} className="tab w-[33%]">
+        <Link
+          href={`/my-teams/${teamId}/members`}
+          className={`tab w-[50%] ${
+            pathname.includes("/members") && "tab-active"
+          }`}
+        >
           Members
         </Link>
       </div>
@@ -64,10 +75,6 @@ const Team = ({ children }: props) => {
         <button className="active">
           <Task />
           <span className="btm-nav-label">Tasks</span>
-        </button>
-        <button>
-          <Announcement />
-          <span className="btm-nav-label">Announcements</span>
         </button>
         <button>
           <People />

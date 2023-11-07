@@ -19,8 +19,8 @@ const index = () => {
 
   return (
     <Main>
-      <div className="m-5">
-        <div className="grid grid-cols-4 gap-2">
+      <div className="lg:m-5 m-2">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
           {authUser?.memberships?.map((team: Ttm) => (
             <TeamCard key={team?._id} team={team} />
           ))}

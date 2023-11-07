@@ -65,11 +65,11 @@ const TodoAcordian = ({
         <div className="collapse-title text-xl font-medium bg-[steelblue] text-white flex justify-between space-x-2 items-start">
           <p className="w-[90%] text-sm lg:text-lg">{work}</p>
           <div
-            className={`badge text-sm lg:text-lg ${
+            className={`badge badge-sm  ${
               status === "done"
                 ? "badge-success"
                 : status === "pending"
-                ? "badge-warning"
+                ? "badge-error"
                 : "badge-neutral"
             }`}
           >
@@ -85,11 +85,14 @@ const TodoAcordian = ({
             <div className="lg:badge lg:badge-primary font-bold">
               {`${deadline.time} ${deadline.meridiem}`}
             </div>
-            <div className="lg:badge lg:badge-primary font-bold">
-              {`${
-                new Date(deadline.day as Date).getDay() - new Date().getDay()
-              } day(s) left`}
-            </div>
+            {new Date(deadline.day as Date).getDay() - new Date().getDay() >
+              0 && (
+              <div className="lg:badge lg:badge-primary font-bold">
+                {`${
+                  new Date(deadline.day as Date).getDay() - new Date().getDay()
+                } day(s) left`}
+              </div>
+            )}
           </div>
           <p>
             {" "}

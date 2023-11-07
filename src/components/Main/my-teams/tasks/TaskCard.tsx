@@ -29,7 +29,7 @@ const TaskCard = ({ task }: props) => {
   return (
     <Link
       href={`/my-teams/${teamId}/task/${_id}`}
-      className="flex items-center justify-between bg-[steelblue] text-white shadow-lg p-2 rounded-lg"
+      className="flex items-center justify-between bg-[steelblue] text-white shadow-lg p-2 rounded-lg my-2"
     >
       <div>
         <p className="font-bold lg:text-xl">{taskName}</p>

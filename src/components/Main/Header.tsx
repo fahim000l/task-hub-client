@@ -1,17 +1,18 @@
 import { AUTH_CONTEXT, TauthInfo } from "@/contexts/AuthProviders";
 import Link from "next/link";
 import React, { useContext } from "react";
+import { ComputerOutlined } from "@mui/icons-material";
 
 const Header = () => {
   const { authUser } = useContext<TauthInfo | undefined>(AUTH_CONTEXT) || {};
 
   return (
     <div className="navbar bg-[steelblue] sticky top-0 z-50 h-[10vh]">
-      <div className="navbar-start">
+      <div className="navbar-start w-full">
         <label htmlFor="mainDrawer" className="btn btn-ghost lg:hidden">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
+            className="h-5 w-5 text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -24,31 +25,18 @@ const Header = () => {
             />
           </svg>
         </label>
-        <a className="btn btn-ghost normal-case text-xl">daisyUI</a>
+        <Link
+          href={"/"}
+          className="normal-case text-xl text-white flex items-start space-x-2 w-full"
+        >
+          <ComputerOutlined className="text-5xl" />{" "}
+          <div>
+            <p>Task Hub</p>
+            <p className="text-xs">Your Schedule Manager</p>
+          </div>
+        </Link>
       </div>
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          <li>
-            <a>Item 1</a>
-          </li>
-          <li tabIndex={0}>
-            <details>
-              <summary>Parent</summary>
-              <ul className="p-2">
-                <li>
-                  <a>Submenu 1</a>
-                </li>
-                <li>
-                  <a>Submenu 2</a>
-                </li>
-              </ul>
-            </details>
-          </li>
-          <li>
-            <a>Item 3</a>
-          </li>
-        </ul>
-      </div>
+
       {authUser?.email ? (
         <div className="avatar navbar-end">
           <div className="w-10 rounded-full">

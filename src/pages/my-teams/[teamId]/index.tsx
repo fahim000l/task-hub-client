@@ -23,20 +23,23 @@ const index = () => {
 
   return (
     <Team>
-      <div className="lg:p-5 p-1">
-        <label
-          htmlFor="addTaskDrawer"
-          className="btn btn-sm btn-info normal-case"
-        >
-          <Add />
-          Create Task
-        </label>
+      <div className="lg:p-5 p-1 min-h-screen">
+        {authUser?.email === team?.leader && (
+          <label
+            htmlFor="addTaskDrawer"
+            className="btn btn-sm btn-info normal-case"
+          >
+            <Add />
+            Create Task
+          </label>
+        )}
         <div className="my-2">
           {team?.tasks
             ?.filter(
               (task: Ttask) =>
+                authUser?.email === team?.leader ||
                 task.assign === "all" ||
-                task.assignings?.filter(
+                task.assignings?.some(
                   (assignedTo: any) => assignedTo.user === authUser?.email
                 )
             )

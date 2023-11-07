@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import useBase64 from "@/hooks/useBase64";
 import Swal from "sweetalert2";
 import { TUser } from "@/pages/signup";
+import useGetTaskById from "@/hooks/useGetTaskById";
 
 interface props {
   task: Ttask;
@@ -23,6 +24,7 @@ const AddSubmissionDrawer = ({ task }: props) => {
   const fileUploader = useRef<HTMLInputElement | null>(null);
   const [uploadingFile, setUploadingFile] = useState<File | null>(null);
   const { convertedImage } = useBase64(uploadingFile as File);
+  const { taskRefetch } = useGetTaskById(task?._id);
 
   const { authUser } = useContext(AUTH_CONTEXT) || {};
 
@@ -51,6 +53,7 @@ const AddSubmissionDrawer = ({ task }: props) => {
           console.log(data);
           if (data?.success) {
             Formik.resetForm();
+            taskRefetch();
             Swal.fire("Submitted Successfullt", "", "success");
           }
         });
@@ -73,16 +76,16 @@ const AddSubmissionDrawer = ({ task }: props) => {
         type="checkbox"
         className="drawer-toggle"
       />
-      <div className="drawer-side z-[900] h-full overflow-scroll">
+      <div className="drawer-side z-[900] min-h-screen overflow-scroll">
         <label
           htmlFor="addSubmissionDrawer"
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <div className="w-[90%] bg-[lightblue] h-[100vh] text-base-content">
+        <div className="w-[90%] bg-[lightblue] min-h-screen text-base-content">
           <form
             onSubmit={Formik.handleSubmit}
-            className="lg:w-full lg:p-5 p-2 h-[100vh]"
+            className="lg:w-full lg:p-5 p-2 min-h-screen"
           >
             <div className="flex flex-col my-2">
               <label className={`font-bold`} htmlFor="">
@@ -154,6 +157,10 @@ const AddSubmissionDrawer = ({ task }: props) => {
               />
             </div>
             <button
+              disabled={
+                Formik.values.details === "" &&
+                Formik.values.attachments?.length === 0
+              }
               type="submit"
               className="btn btn-sm btn-success normal-case"
             >
