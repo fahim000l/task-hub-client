@@ -8,12 +8,14 @@ const useGetTeamById = (teamId: string | undefined) => {
     isLoading: teamLoadnig,
   } = useQuery({
     queryKey: ["get-team-by-id", teamId as string],
-    queryFn: () => {
+    queryFn: async () => {
       if (teamId) {
-        return fetch(
+        return await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}get-team-by-id?teamId=${teamId}`
         ).then((res) => res.json());
       }
+
+      return {};
     },
   });
 

@@ -40,7 +40,7 @@ const Main = ({ children }: props) => {
               <Link href={"/create-team"}>Create Team</Link>
               <details>
                 <summary>
-                  <Link href={"/my-teams"}>My Team</Link>
+                  <Link href={"/my-teams"}>My Teams</Link>
                 </summary>
                 <ul className="menu">
                   {authUser?.memberships?.map((team: Ttm) => (

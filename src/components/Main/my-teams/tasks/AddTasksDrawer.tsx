@@ -7,6 +7,10 @@ import { format } from "date-fns";
 import useBase64 from "@/hooks/useBase64";
 import { useFormik } from "formik";
 import { log } from "console";
+import { useRouter } from "next/router";
+import Swal from "sweetalert2";
+import { TUser } from "@/pages/signup";
+import { Tsubmission } from "./taskId/AddSubmissionDrawer";
 
 interface props {
   team: Tteam;
@@ -14,6 +18,7 @@ interface props {
 
 export interface Ttask {
   _id?: string;
+  teamId: string;
   taskName: string;
   work: string;
   assign: "all" | "specific";
@@ -26,6 +31,7 @@ export interface Ttask {
   details?: string;
   attachments?: TAt[] | never[];
   assignings?: TAssigned[] | never[];
+  submissions?: Tsubmission[] | never[];
 }
 
 export interface TAt {
@@ -38,11 +44,10 @@ export interface TAssigned {
   _id?: string;
   taskId?: string;
   user: string;
+  assignedTo?: TUser[];
 }
 
 const AddTasksDrawer = ({ team }: props) => {
-  const [assigning, setAssigning] = useState("all");
-  const [day, setDay] = useState<Date>(new Date());
   const [meridiem, setMeridiem] = useState<"AM" | "PM">("AM");
   const [time, setTime] = useState<string | undefined>(
     `${new Date().getHours()}:${new Date().getMinutes()}`
@@ -50,9 +55,13 @@ const AddTasksDrawer = ({ team }: props) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { convertedImage } = useBase64(selectedFile as File);
   const fileUploader = useRef<HTMLInputElement | null>(null);
+  const {
+    query: { teamId },
+  } = useRouter();
 
   const Formik = useFormik<Ttask>({
     initialValues: {
+      teamId: "",
       taskName: "",
       assign: "all",
       deadline: {
@@ -69,6 +78,7 @@ const AddTasksDrawer = ({ team }: props) => {
     onSubmit: (values) => {
       values.deadline.time = time as string;
       values.deadline.meridiem = meridiem;
+      values.teamId = teamId as string;
 
       let assignings: TAssigned[] = [];
       let attachments: TAt[] = [];
@@ -98,6 +108,10 @@ const AddTasksDrawer = ({ team }: props) => {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
+          if (data?.success) {
+            Formik.resetForm();
+            Swal.fire("New task added!", "", "success");
+          }
         });
     },
   });

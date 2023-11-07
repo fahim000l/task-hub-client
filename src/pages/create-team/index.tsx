@@ -5,6 +5,7 @@ import React, { useContext, useEffect } from "react";
 import Swal from "sweetalert2";
 import { TUser } from "../signup";
 import { Ttm } from "../my-teams";
+import { Ttask } from "@/components/Main/my-teams/tasks/AddTasksDrawer";
 
 export interface Tteam {
   _id?: string;
@@ -14,6 +15,7 @@ export interface Tteam {
   leader?: string;
   leaderInfo?: TUser[];
   members?: Ttm[];
+  tasks?: Ttask[];
 }
 
 const index = () => {
