@@ -43,7 +43,7 @@ const AuthProviders = ({ children }: params) => {
 
   const googleSignIn = () => {
     setAuthLoader(true);
-    location.href(`${process.env.NEXT_PUBLIC_SERVER_URL}auth-google`);
+    location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}auth-google`;
   };
 
   const logIn = (values: { email: string; password: string }) => {
